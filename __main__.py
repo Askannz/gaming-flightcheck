@@ -2,6 +2,7 @@ from pci import list_gpus
 from opengl import get_opengl_info
 from cpu import get_cpu_governor_info
 from limits import get_limits_info
+from distribution_specific.ArchlinuxReader import ArchlinuxReader
 
 gpus_pci_map = list_gpus()
 
@@ -28,3 +29,11 @@ limits_info = get_limits_info()
 
 print("")
 print("System file limit : %d" % limits_info["file_limit"])
+
+distribution_reader = ArchlinuxReader()
+
+print("")
+checklist = []
+system_info = {}
+system_info, checklist = distribution_reader.check_nvidia_packages(system_info, checklist)
+print(checklist)
