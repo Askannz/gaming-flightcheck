@@ -1,4 +1,4 @@
-from pci import list_gpus
+from pci import get_GPUs_PCI_info
 from opengl import get_opengl_info
 from cpu import get_cpu_governor_info
 from limits import get_limits_info
@@ -6,7 +6,9 @@ from nvidia import get_PAT_usage_enabled
 from display import get_PRIME_sync_info
 from distribution_specific.ArchlinuxReader import ArchlinuxReader
 
-gpus_pci_map = list_gpus()
+GPUs_PCI_info = get_GPUs_PCI_info()
+
+gpus_pci_map = GPUs_PCI_info["pci_map"]
 
 for bus_id in gpus_pci_map.keys():
 
