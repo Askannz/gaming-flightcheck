@@ -1,14 +1,23 @@
 from bash import exec_bash
 
 
-def get_PRIME_sync_info(available_executables):
+def get_PRIME_sync_info(system_info):
 
-    PRIME_sync_info = {"error": False, "nb_supported": 0, "nb_enabled": 0}
+    assert "available_executables" in system_info.keys()
 
-    if "xrandr" not in available_executables:
-        print("ERROR : PRIME sync : xrandr not available, cannot check PRIME support")
+    if "xrandr" not in system_info["available_executables"]:
+        PRIME_sync_info = _make_empty_PRIME_sync_info()
         PRIME_sync_info["error"] = True
         return PRIME_sync_info
+
+    PRIME_sync_info = parse_xrandr_PRIME_sync()
+
+    return PRIME_sync_info
+
+
+def parse_xrandr_PRIME_sync():
+
+    PRIME_sync_info = _make_empty_PRIME_sync_info()
 
     returncode, xrandr_output, stderr = exec_bash("xrandr --verbose")
 
@@ -50,3 +59,7 @@ def get_PRIME_sync_info(available_executables):
                 PRIME_sync_info["nb_enabled"] += 1
 
     return PRIME_sync_info
+
+
+def _make_empty_PRIME_sync_info():
+    return {"error": False, "nb_supported": 0, "nb_enabled": 0}

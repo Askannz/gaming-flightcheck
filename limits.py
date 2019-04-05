@@ -1,11 +1,16 @@
 from bash import exec_bash
 
 
-def get_limits_info():
+def get_limits_info(system_info):
+
+    return parse_ulimits()
+
+
+def parse_ulimits():
+
+    limits_info = _make_empty_limits_info()
 
     returncode, ulimit_output, stderr = exec_bash("ulimit -Hn")
-
-    limits_info = {"error": False, "file_limit": 0}
 
     ulimit_output = ulimit_output.strip()
 
@@ -24,6 +29,10 @@ def get_limits_info():
     limits_info["file_limit"] = limit_value
 
     return limits_info
+
+
+def _make_empty_limits_info():
+    return {"error": False, "file_limit": 0}
 
 
 def _print_ulimit_error(msg):

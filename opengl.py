@@ -2,15 +2,23 @@ import re
 from bash import exec_bash
 
 
-def get_opengl_info(available_executables):
+def get_opengl_info(system_info):
 
-    opengl_info = {"error": False, "opengl_version": "",
-                   "renderer": "", "renderer_version": ""}
+    assert "available_executables" in system_info.keys()
 
-    if "glxinfo" not in available_executables:
-        _print_glxinfo_error("glxinfo not available, cannot get OpenGL info")
+    if "lspci" not in system_info["available_executables"]:
+        opengl_info = _make_empty_opengl_info()
         opengl_info["error"] = True
         return opengl_info
+
+    opengl_info = parse_glxinfo_opengl()
+
+    return opengl_info
+
+
+def parse_glxinfo_opengl():
+
+    opengl_info = _make_empty_opengl_info()
 
     returncode, glxinfo_output, stderr = exec_bash("glxinfo")
 
@@ -58,6 +66,11 @@ def get_opengl_info(available_executables):
         _print_glxinfo_error("OpenGL version string not found")
         opengl_info["error"] = True
         return opengl_info
+
+
+def _make_empty_opengl_info():
+    return {"error": False, "opengl_version": "",
+            "renderer": "", "renderer_version": ""}
 
 
 def _print_glxinfo_error(msg):

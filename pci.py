@@ -2,14 +2,23 @@ import re
 from bash import exec_bash
 
 
-def get_GPUs_PCI_info(available_executables):
+def get_GPUs_PCI_info(system_info):
 
-    GPUs_PCI_info = {"error": False, "pci_map": {}}
+    assert "available_executables" in system_info.keys()
 
-    if "lspci" not in available_executables:
-        _print_gpu_listing_error("lspci not available, cannot list GPUs")
+    if "lspci" not in system_info["available_executables"]:
+        GPUs_PCI_info = _make_empty_GPUs_PCI_info()
         GPUs_PCI_info["error"] = True
         return GPUs_PCI_info
+
+    GPUs_PCI_info = parse_lspci_GPUs_PCI()
+
+    return GPUs_PCI_info
+
+
+def parse_lspci_GPUs_PCI():
+
+    GPUs_PCI_info = _make_empty_GPUs_PCI_info()
 
     gpus_pci_map = _get_gpus_pci_ids()
     gpus_pci_map = _add_gpu_names(gpus_pci_map)
@@ -148,6 +157,10 @@ def _add_gpu_kernel_drivers(gpus_pci_map):
             gpus_pci_map[bus_id_str]["active_module"] = None
 
     return gpus_pci_map
+
+
+def _make_empty_GPUs_PCI_info():
+    return {"error": False, "pci_map": {}}
 
 
 def _print_gpu_listing_warning(msg):

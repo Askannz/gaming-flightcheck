@@ -1,9 +1,14 @@
 import os
 
 
-def get_PAT_usage_enabled():
+def get_nvidia_PAT_info(system_info):
 
-    nvidia_PAT_info = {"error": False, "enabled": False}
+    return parse_nvidia_PAT_usage()
+
+
+def parse_nvidia_PAT_usage():
+
+    nvidia_PAT_info = _make_empty_nvidia_PAT_info()
 
     nvidia_parameters_path = "/proc/driver/nvidia/params"
 
@@ -49,3 +54,7 @@ def get_PAT_usage_enabled():
         print("ERROR : nvidia PAT : Cannot find UsePageAttributeTable attribute")
         nvidia_PAT_info["error"] = True
         return nvidia_PAT_info
+
+
+def _make_empty_nvidia_PAT_info():
+    return {"error": False, "enabled": False}

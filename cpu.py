@@ -1,10 +1,14 @@
 import os
 
 
-def get_cpu_governor_info():
+def get_cpu_governor_info(system_info):
 
-    cpu_governor_info = {"error": False,  "available_governors": [],
-                         "current_governor": ""}
+    return parse_cpu_governor()
+
+
+def parse_cpu_governor():
+
+    cpu_governor_info = _make_empty_cpu_governor_info()
 
     available_governors_path = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors"
     current_governor_path = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
@@ -51,6 +55,11 @@ def get_cpu_governor_info():
             cpu_governor_info["current_governor"] = current_governor
 
     return cpu_governor_info
+
+
+def _make_empty_cpu_governor_info():
+    return {"error": False,  "available_governors": [],
+            "current_governor": ""}
 
 
 def _print_cpu_governor_error(msg):
