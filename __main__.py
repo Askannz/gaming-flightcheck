@@ -2,6 +2,7 @@ from pci import list_gpus
 from opengl import get_opengl_info
 from cpu import get_cpu_governor_info
 from limits import get_limits_info
+from nvidia import get_PAT_usage_enabled
 from distribution_specific.ArchlinuxReader import ArchlinuxReader
 
 gpus_pci_map = list_gpus()
@@ -37,3 +38,8 @@ checklist = []
 system_info = {}
 system_info, checklist = distribution_reader.check_nvidia_packages(system_info, checklist)
 print(checklist)
+
+nvidia_PAT_info = get_PAT_usage_enabled()
+
+print("")
+print("Page Attribute Table usage enabled : %s" % ("yes" if nvidia_PAT_info["enabled"] else "no"))
