@@ -3,6 +3,7 @@ from opengl import get_opengl_info
 from cpu import get_cpu_governor_info
 from limits import get_limits_info
 from nvidia import get_PAT_usage_enabled
+from display import get_PRIME_sync_info
 from distribution_specific.ArchlinuxReader import ArchlinuxReader
 
 gpus_pci_map = list_gpus()
@@ -43,3 +44,9 @@ nvidia_PAT_info = get_PAT_usage_enabled()
 
 print("")
 print("Page Attribute Table usage enabled : %s" % ("yes" if nvidia_PAT_info["enabled"] else "no"))
+
+PRIME_sync_info = get_PRIME_sync_info()
+
+print("")
+print("PRIME Sync : supported on %d monitor(s), enabled on %d"
+      % (PRIME_sync_info["nb_supported"], PRIME_sync_info["nb_enabled"]))
