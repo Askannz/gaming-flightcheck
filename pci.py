@@ -1,16 +1,15 @@
 import re
-from executable import is_executable_in_path
 from bash import exec_bash
 
 
-def get_GPUs_PCI_info():
+def get_GPUs_PCI_info(available_executables):
 
-    GPUs_PCI_info = {"error": False, "lspci_available": False, "pci_map": {}}
+    GPUs_PCI_info = {"error": False, "pci_map": {}}
 
-    if not is_executable_in_path("lspci"):
+    if "lspci" not in available_executables:
+        _print_gpu_listing_error("lspci not available, cannot list GPUs")
+        GPUs_PCI_info["error"] = True
         return GPUs_PCI_info
-    else:
-        GPUs_PCI_info["lspci_available"] = True
 
     gpus_pci_map = _get_gpus_pci_ids()
     gpus_pci_map = _add_gpu_names(gpus_pci_map)

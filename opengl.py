@@ -1,17 +1,16 @@
 import re
-from executable import is_executable_in_path
 from bash import exec_bash
 
 
-def get_opengl_info():
+def get_opengl_info(available_executables):
 
-    opengl_info = {"error": False, "glxinfo_available": False, "opengl_version": "",
+    opengl_info = {"error": False, "opengl_version": "",
                    "renderer": "", "renderer_version": ""}
 
-    if not is_executable_in_path("glxinfo"):
+    if "glxinfo" not in available_executables:
+        _print_glxinfo_error("glxinfo not available, cannot get OpenGL info")
+        opengl_info["error"] = True
         return opengl_info
-    else:
-        opengl_info["glxinfo_available"] = True
 
     returncode, glxinfo_output, stderr = exec_bash("glxinfo")
 

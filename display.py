@@ -1,15 +1,14 @@
-from executable import is_executable_in_path
 from bash import exec_bash
 
 
-def get_PRIME_sync_info():
+def get_PRIME_sync_info(available_executables):
 
-    PRIME_sync_info = {"error": False, "xrandr_available": False, "nb_supported": 0, "nb_enabled": 0}
+    PRIME_sync_info = {"error": False, "nb_supported": 0, "nb_enabled": 0}
 
-    if not is_executable_in_path("xrandr"):
+    if "xrandr" not in available_executables:
+        print("ERROR : PRIME sync : xrandr not available, cannot check PRIME support")
+        PRIME_sync_info["error"] = True
         return PRIME_sync_info
-    else:
-        PRIME_sync_info["xrandr_available"] = True
 
     returncode, xrandr_output, stderr = exec_bash("xrandr --verbose")
 

@@ -1,3 +1,4 @@
+from executable import get_executables_availability
 from pci import get_GPUs_PCI_info
 from opengl import get_opengl_info
 from cpu import get_cpu_governor_info
@@ -6,7 +7,9 @@ from nvidia import get_PAT_usage_enabled
 from display import get_PRIME_sync_info
 from distribution_specific.ArchlinuxReader import ArchlinuxReader
 
-GPUs_PCI_info = get_GPUs_PCI_info()
+available_executables = get_executables_availability(["lspci", "glxinfo", "xrandr"])
+
+GPUs_PCI_info = get_GPUs_PCI_info(available_executables)
 
 gpus_pci_map = GPUs_PCI_info["pci_map"]
 
@@ -16,7 +19,7 @@ for bus_id in gpus_pci_map.keys():
     print("\tAvailable modules: %s" % "/".join(gpus_pci_map[bus_id]["available_modules"]))
     print("\tModule in use: %s" % gpus_pci_map[bus_id]["active_module"])
 
-opengl_info = get_opengl_info()
+opengl_info = get_opengl_info(available_executables)
 
 print("")
 print("Renderer: %s" % opengl_info["renderer"])
@@ -47,7 +50,7 @@ nvidia_PAT_info = get_PAT_usage_enabled()
 print("")
 print("Page Attribute Table usage enabled : %s" % ("yes" if nvidia_PAT_info["enabled"] else "no"))
 
-PRIME_sync_info = get_PRIME_sync_info()
+PRIME_sync_info = get_PRIME_sync_info(available_executables)
 
 print("")
 print("PRIME Sync : supported on %d monitor(s), enabled on %d"
