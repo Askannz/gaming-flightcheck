@@ -4,7 +4,10 @@ from ..utils.bash import exec_bash
 from ._DistributionContext import _DistributionContext
 
 ARCHLINUX_PACKAGES_LIST = ["nvidia", "nvidia-utils", "lib32-nvidia-utils",
-                           "vulkan-icd-loader", "lib32-vulkan-icd-loader"]
+                           "vulkan-icd-loader", "lib32-vulkan-icd-loader",
+                           "mesa", "lib32-mesa",
+                           "vulkan-radeon", "lib32-vulkan-radeon",
+                           "vulkan-intel", "lib32-vulkan-intel"]
 
 
 class ArchlinuxContext(_DistributionContext):
