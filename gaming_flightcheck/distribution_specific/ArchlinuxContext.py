@@ -1,10 +1,10 @@
 import itertools
 import re
 from ..utils.bash import exec_bash
-from ._DistributionReader import _DistributionReader
+from ._DistributionContext import _DistributionContext
 
 
-class ArchlinuxReader(_DistributionReader):
+class ArchlinuxContext(_DistributionContext):
 
     def check_nvidia_packages(self, system_info, checklist):
 
@@ -45,7 +45,7 @@ class ArchlinuxReader(_DistributionReader):
         package_installed = False
         package_version = ""
 
-        if not ArchlinuxReader._check_package_manager():
+        if not ArchlinuxContext._check_package_manager():
             print("ERROR : cannot query package manager \"pacman\". "
                   "Is the distribution not Archlinux ?")
             error = True

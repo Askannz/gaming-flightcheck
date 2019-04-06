@@ -7,7 +7,7 @@ from .info.limits import get_limits_info
 from .info.nvidia import get_nvidia_PAT_info
 from .info.display import get_PRIME_sync_info
 from .info.vulkan import get_vulkan_info
-from .distribution_specific.ArchlinuxReader import ArchlinuxReader
+from .distribution_specific.ArchlinuxContext import ArchlinuxContext
 
 
 def print_system_info():
@@ -15,8 +15,8 @@ def print_system_info():
     system_info = {}
     checklist = []
 
-    distribution_reader = ArchlinuxReader()
-    system_info, checklist = distribution_reader.check_nvidia_packages(system_info, checklist)
+    distribution_context = ArchlinuxContext()
+    system_info, checklist = distribution_context.check_nvidia_packages(system_info, checklist)
 
     system_info["available_executables"] = \
         get_executables_availability(["lsb_release", "hostnamectl", "ldconfig", "lspci", "glxinfo", "xrandr", "vulkaninfo"])
