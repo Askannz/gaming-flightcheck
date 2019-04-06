@@ -80,7 +80,7 @@ def print_system_info():
     print("Vulkan :")
 
     libvulkan_info = system_info["vulkan"]["libvulkan"]
-    print("\tlibvulkan installed :\n"
+    print("\tlibvulkan present :\n"
           "\t\t32-bit : %s\n"
           "\t\t64-bit : %s"
           % (("yes" if libvulkan_info["32bit"] else "no"),
@@ -98,11 +98,18 @@ def print_system_info():
 
     print("")
     print("Archlinux packages :")
+
+    print("\tMultilib repository enabled : %s"
+          % ("yes" if packages_info["multilib"]["enabled"] else "no"))
+
+    print("\tInstalled :")
     for package in packages_info["packages_dict"].keys():
         single_package_info = packages_info["packages_dict"][package]
-        print("\t%s :\n"
-              "\t\tInstalled : %s\n"
-              "\t\tVersion : %s"
-              % (package,
-                 ("yes" if single_package_info["installed"] else "no"),
-                 single_package_info["version"]))
+        if single_package_info["installed"]:
+            print("\t\t%s (%s)" % (package, single_package_info["version"]))
+
+    print("\tNot installed :")
+    for package in packages_info["packages_dict"].keys():
+        single_package_info = packages_info["packages_dict"][package]
+        if not single_package_info["installed"]:
+            print("\t\t%s" % package)

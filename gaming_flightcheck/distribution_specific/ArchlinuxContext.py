@@ -15,6 +15,8 @@ class ArchlinuxContext(_DistributionContext):
 
         packages_info = self._get_empty_packages_info()
 
+        packages_info["multilib"] = pacman.get_multilib_info()
+
         if not is_executable_in_path("pacman"):
             print("ERROR : \"pacman\" is not in PATH."
                   "Is the distribution not Archlinux ?")
@@ -29,6 +31,7 @@ class ArchlinuxContext(_DistributionContext):
     @staticmethod
     def _get_empty_packages_info():
         packages_info = {"error": False, "packages_dict": {}}
+        packages_info["multilib"] = pacman.get_empty_multilib_info()
         for package in ARCHLINUX_PACKAGES_LIST:
             packages_info["packages_dict"][package] = pacman.get_empty_single_package_info()
         return packages_info

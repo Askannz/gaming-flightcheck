@@ -2,6 +2,28 @@ import re
 from ...utils.bash import exec_bash
 
 
+def get_multilib_info():
+
+    multilib_info = get_empty_multilib_info()
+
+    returncode, pacman_output, pacman_stderr = exec_bash("pacman -Sl multilib")
+
+    if returncode != 0:
+
+        if re.search("repository .+ was not found", pacman_stderr):
+            multilib_info["enabled"] = False
+            return multilib_info
+
+        else:
+            print("ERROR : error running \"pacman -Sl multilib\": %s" % pacman_stderr)
+            multilib_info["error"] = True
+            return multilib_info
+
+    else:
+        multilib_info["enabled"] = True
+        return multilib_info
+
+
 def get_single_package_info(package):
 
     single_package_info = get_empty_single_package_info()
@@ -48,6 +70,10 @@ def get_single_package_info(package):
             print("ERROR : pacman -Qi %s : package found but cannot parse version" % package)
             single_package_info["error"] = True
             return single_package_info
+
+
+def get_empty_multilib_info():
+    return {"error": False, "enabled": False}
 
 
 def get_empty_single_package_info():
