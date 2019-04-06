@@ -1,4 +1,4 @@
-from bash import exec_bash
+from .. import utils
 
 
 def get_executables_availability(exec_names_list):
@@ -13,6 +13,6 @@ def get_executables_availability(exec_names_list):
 
 def is_executable_in_path(exec_name):
 
-    returncode, _, _ = exec_bash("which %s" % exec_name)
+    returncode, _, _ = utils.bash.exec_bash("which %s" % exec_name)
 
     return (returncode == 0)

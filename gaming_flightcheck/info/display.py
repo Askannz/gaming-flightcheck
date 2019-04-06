@@ -1,4 +1,4 @@
-from bash import exec_bash
+from .. import utils
 
 
 def get_PRIME_sync_info(system_info):
@@ -19,7 +19,7 @@ def parse_xrandr_PRIME_sync():
 
     PRIME_sync_info = _make_empty_PRIME_sync_info()
 
-    returncode, xrandr_output, stderr = exec_bash("xrandr --verbose")
+    returncode, xrandr_output, stderr = utils.bash.exec_bash("xrandr --verbose")
 
     if returncode != 0:
         print("ERROR : PRIME sync : xrandr returned an error : %s" % stderr)

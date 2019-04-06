@@ -1,5 +1,5 @@
 import re
-from bash import exec_bash
+from ..utils.bash import exec_bash
 
 
 def get_GPUs_PCI_info(system_info):

@@ -1,6 +1,6 @@
 import itertools
 import re
-from bash import exec_bash
+from ..utils.bash import exec_bash
 from ._DistributionReader import _DistributionReader
 
 
