@@ -13,10 +13,6 @@ from .distribution_specific.ArchlinuxContext import ArchlinuxContext
 def print_system_info():
 
     system_info = {}
-    checklist = []
-
-    distribution_context = ArchlinuxContext()
-    system_info, checklist = distribution_context.check_nvidia_packages(system_info, checklist)
 
     system_info["available_executables"] = \
         get_executables_availability(["lsb_release", "hostnamectl", "ldconfig", "lspci", "glxinfo", "xrandr", "vulkaninfo"])
@@ -28,6 +24,10 @@ def print_system_info():
     system_info["nvidia_PAT"] = get_nvidia_PAT_info(system_info)
     system_info["PRIME_sync"] = get_PRIME_sync_info(system_info)
     system_info["vulkan"] = get_vulkan_info(system_info)
+
+    distribution_context = ArchlinuxContext()
+    system_info["distribution_specific"] = {}
+    system_info["distribution_specific"]["packages"] = distribution_context.get_packages_info(system_info)
 
     distribution_info = system_info["distribution"]
 
@@ -65,9 +65,6 @@ def print_system_info():
     print("")
     print("System file limit : %d" % limits_info["file_limit"])
 
-    print("")
-    print(checklist)
-
     nvidia_PAT_info = system_info["nvidia_PAT"]
 
     print("")
@@ -96,3 +93,16 @@ def print_system_info():
 
     vulkaninfo_status_info = system_info["vulkan"]["vulkaninfo_status"]
     print("\tvulkaninfo error : %s" % ("no" if vulkaninfo_status_info["status_ok"] else "yes"))
+
+    packages_info = system_info["distribution_specific"]["packages"]
+
+    print("")
+    print("Archlinux packages :")
+    for package in packages_info["packages_dict"].keys():
+        single_package_info = packages_info["packages_dict"][package]
+        print("\t%s :\n"
+              "\t\tInstalled : %s\n"
+              "\t\tVersion : %s"
+              % (package,
+                 ("yes" if single_package_info["installed"] else "no"),
+                 single_package_info["version"]))

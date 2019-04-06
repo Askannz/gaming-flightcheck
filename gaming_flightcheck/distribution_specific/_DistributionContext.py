@@ -1,4 +1,4 @@
 class _DistributionContext:
 
-    def check_nvidia_packages(self, system_info, checklist):
-        raise NotImplementedError("check_nvidia_packages()")
+    def get_packages_info(self, system_info):
+        raise NotImplementedError("get_packages_info()")

@@ -1,100 +1,84 @@
-import itertools
 import re
+from ..info.executables import is_executable_in_path
 from ..utils.bash import exec_bash
 from ._DistributionContext import _DistributionContext
+
+ARCHLINUX_PACKAGES_LIST = ["nvidia", "nvidia-utils", "lib32-nvidia-utils",
+                           "vulkan-icd-loader", "lib32-vulkan-icd-loader"]
 
 
 class ArchlinuxContext(_DistributionContext):
 
-    def check_nvidia_packages(self, system_info, checklist):
+    def get_packages_info(self, system_info):
 
-        packages_info = {}
+        packages_info = self._get_empty_packages_info()
 
-        for package in ["nvidia", "nvidia-utils", "lib32-nvidia-utils"]:
+        if not is_executable_in_path("pacman"):
+            print("ERROR : \"pacman\" is not in PATH."
+                  "Is the distribution not Archlinux ?")
+            packages_info["error"] = True
+            return packages_info
 
-            error, installed, version = self._check_package_installed(package)
-            packages_info[package] = {}
-            packages_info[package]["error"] = error
-            packages_info[package]["installed"] = installed
-            packages_info[package]["version"] = version
+        for package in ARCHLINUX_PACKAGES_LIST:
+            packages_info["packages_dict"][package] = self._get_single_package_info(package)
 
-        for package in ["nvidia", "nvidia-utils", "lib32-nvidia-utils"]:
-            if packages_info[package]["error"]:
-                checklist.append(("critical", "Error parsing Nvidia packages information"))
-                return system_info, checklist
-
-        for package in ["nvidia", "nvidia-utils", "lib32-nvidia-utils"]:
-            if not packages_info[package]["installed"]:
-                checklist.append(("critical", "Package %s is not installed" % package))
-            else:
-                checklist.append(("ok", "Package %s is installed" % package))
-
-        for p_1, p_2 in itertools.combinations(["nvidia", "nvidia-utils", "lib32-nvidia-utils"], 2):
-            if packages_info[p_1]["installed"] and packages_info[p_2]["installed"] and \
-               packages_info[p_1]["version"] != packages_info[p_2]["version"]:
-                checklist.append(("critical", "Version mismatch between %s (%s) and %s (%s)"
-                                  % (p_1, packages_info[p_1]["version"],
-                                     p_2, packages_info[p_2]["version"])))
-
-        return system_info, checklist
+        return packages_info
 
     @staticmethod
-    def _check_package_installed(package):
+    def _get_empty_packages_info():
+        packages_info = {"error": False, "packages_dict": {}}
+        for package in ARCHLINUX_PACKAGES_LIST:
+            packages_info["packages_dict"][package] = ArchlinuxContext._get_empty_single_package_info()
+        return packages_info
 
-        error = False
-        package_installed = False
-        package_version = ""
+    @staticmethod
+    def _get_empty_single_package_info():
+        return {"error": False, "installed": False, "version": ""}
 
-        if not ArchlinuxContext._check_package_manager():
-            print("ERROR : cannot query package manager \"pacman\". "
-                  "Is the distribution not Archlinux ?")
-            error = True
-            return error, package_installed, package_version
+    @staticmethod
+    def _get_single_package_info(package):
+
+        single_package_info = ArchlinuxContext._get_empty_single_package_info()
+
+        returncode, pacman_output, pacman_stderr = exec_bash("pacman -Qi %s" % package)
+
+        if returncode != 0:
+
+            if re.search("package .+ was not found", pacman_stderr):
+                single_package_info["installed"] = False
+                return single_package_info
+
+            else:
+                print("ERROR : error running \"pacman -Qi %s\": %s" % (package, pacman_stderr))
+                single_package_info["error"] = True
+                return single_package_info
 
         else:
 
-            returncode, pacman_output, pacman_stderr = exec_bash("pacman -Qi %s" % package)
+            single_package_info["installed"] = True
 
-            if returncode != 0:
+            for line in pacman_output.splitlines():
 
-                if re.search("package .+ was not found", pacman_stderr):
-                    package_installed = False
-                    return error, package_installed, package_version
+                if "Version" in line:
 
-                else:
-                    print("ERROR : error querying pacman -Qi %s : %s" % (package, pacman_stderr))
-                    error = True
-                    return error, package_installed, package_version
+                    version_line_nospace = line.strip().replace(" ", "")
+                    colon_index = version_line_nospace.find(":")
+                    if colon_index == -1 or colon_index == len(version_line_nospace) - 1:
+                        print("WARNING : pacman -Qi %s : cannot parse line %s" % (package, line))
+                        continue
+                    else:
+                        version_line_items = version_line_nospace.split(":")
+                        version = version_line_items[1]
+
+                        # Stripping package release version, if any
+                        if re.search("-[0-9]+$", version):
+                            version = "-".join(version.split("-")[:-1])
+
+                        single_package_info["version"] = version
+
+                        return single_package_info
 
             else:
-
-                package_installed = True
-
-                for line in pacman_output.splitlines():
-
-                    if "Version" in line:
-                        version_line_nospace = line.strip().replace(" ", "")
-                        colon_index = version_line_nospace.find(":")
-                        if colon_index == -1 or colon_index == len(version_line_nospace) - 1:
-                            print("WARNING : pacman -Qi %s : cannot parse line %s" % (package, line))
-                            continue
-                        else:
-                            version_line_items = version_line_nospace.split(":")
-                            version = version_line_items[1]
-
-                            # Stripping package release
-                            if re.search("-[0-9]+$", version):
-                                version = "-".join(version.split("-")[:-1])
-
-                            package_version = version
-
-                            return error, package_installed, package_version
-
-                else:
-                    print("ERROR : pacman -Qi %s : package found but cannot parse version" % package)
-                    error = True
-                    return error, package_installed, package_version
-
-    def _check_package_manager():
-        returncode, _, _ = exec_bash("which pacman")
-        return (returncode == 0)
+                print("ERROR : pacman -Qi %s : package found but cannot parse version" % package)
+                single_package_info["error"] = True
+                return single_package_info
