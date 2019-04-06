@@ -1,4 +1,5 @@
 from .info.executables import get_executables_availability
+from .info.distribution import get_distribution_info
 from .info.pci import get_GPUs_PCI_info
 from .info.opengl import get_opengl_info
 from .info.cpu import get_cpu_governor_info
@@ -18,7 +19,8 @@ def print_system_info():
     system_info, checklist = distribution_reader.check_nvidia_packages(system_info, checklist)
 
     system_info["available_executables"] = \
-        get_executables_availability(["ldconfig", "lspci", "glxinfo", "xrandr", "vulkaninfo"])
+        get_executables_availability(["lsb_release", "hostnamectl", "ldconfig", "lspci", "glxinfo", "xrandr", "vulkaninfo"])
+    system_info["distribution"] = get_distribution_info(system_info)
     system_info["GPUs_PCI"] = get_GPUs_PCI_info(system_info)
     system_info["opengl"] = get_opengl_info(system_info)
     system_info["cpu_governor"] = get_cpu_governor_info(system_info)
@@ -27,13 +29,21 @@ def print_system_info():
     system_info["PRIME_sync"] = get_PRIME_sync_info(system_info)
     system_info["vulkan"] = get_vulkan_info(system_info)
 
+    distribution_info = system_info["distribution"]
+
+    print("")
+    print("Distribution : %s" % distribution_info["name"].capitalize())
+
     gpus_pci_map = system_info["GPUs_PCI"]["pci_map"]
+
+    print("")
+    print("GPU list :")
 
     for bus_id in gpus_pci_map.keys():
 
-        print("%s %s (%s)" % (gpus_pci_map[bus_id]["vendor"], gpus_pci_map[bus_id]["name"], bus_id))
-        print("\tAvailable modules: %s" % "/".join(gpus_pci_map[bus_id]["available_modules"]))
-        print("\tModule in use: %s" % gpus_pci_map[bus_id]["active_module"])
+        print("\t%s %s (%s)" % (gpus_pci_map[bus_id]["vendor"], gpus_pci_map[bus_id]["name"], bus_id))
+        print("\t\tAvailable modules: %s" % "/".join(gpus_pci_map[bus_id]["available_modules"]))
+        print("\t\tModule in use: %s" % gpus_pci_map[bus_id]["active_module"])
 
     opengl_info = system_info["opengl"]
 
