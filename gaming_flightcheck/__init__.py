@@ -1,4 +1,4 @@
-from .info.executable import get_executables_availability
+from .info.executables import get_executables_availability
 from .info.pci import get_GPUs_PCI_info
 from .info.opengl import get_opengl_info
 from .info.cpu import get_cpu_governor_info
