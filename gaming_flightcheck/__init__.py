@@ -5,6 +5,7 @@ from .info.cpu import get_cpu_governor_info
 from .info.limits import get_limits_info
 from .info.nvidia import get_nvidia_PAT_info
 from .info.display import get_PRIME_sync_info
+from .info.vulkan import get_libvulkan_info
 from .distribution_specific.ArchlinuxReader import ArchlinuxReader
 
 
@@ -16,13 +17,14 @@ def print_system_info():
     distribution_reader = ArchlinuxReader()
     system_info, checklist = distribution_reader.check_nvidia_packages(system_info, checklist)
 
-    system_info["available_executables"] = get_executables_availability(["lspci", "glxinfo", "xrandr"])
+    system_info["available_executables"] = get_executables_availability(["ldconfig", "lspci", "glxinfo", "xrandr"])
     system_info["GPUs_PCI"] = get_GPUs_PCI_info(system_info)
     system_info["opengl"] = get_opengl_info(system_info)
     system_info["cpu_governor"] = get_cpu_governor_info(system_info)
     system_info["limits"] = get_limits_info(system_info)
     system_info["nvidia_PAT"] = get_nvidia_PAT_info(system_info)
     system_info["PRIME_sync"] = get_PRIME_sync_info(system_info)
+    system_info["libvulkan"] = get_libvulkan_info(system_info)
 
     gpus_pci_map = system_info["GPUs_PCI"]["pci_map"]
 
@@ -63,3 +65,12 @@ def print_system_info():
     print("")
     print("PRIME Sync : supported on %d monitor(s), enabled on %d"
           % (PRIME_sync_info["nb_supported"], PRIME_sync_info["nb_enabled"]))
+
+    libvulkan_info = system_info["libvulkan"]
+
+    print("")
+    print("libvulkan installed :\n"
+          "\t32-bit : %s\n"
+          "\t64-bit : %s\n"
+          % (("yes" if libvulkan_info["32bit"] else "no"),
+             ("yes" if libvulkan_info["64bit"] else "no")))
