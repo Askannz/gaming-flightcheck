@@ -16,7 +16,7 @@ class ArchlinuxContext(_DistributionContext):
         packages_info = self._get_empty_packages_info()
 
         if not is_executable_in_path("pacman"):
-            print("ERROR : \"pacman\" is not in PATH."
+            print("ERROR : \"pacman\" is not in PATH. "
                   "Is the distribution not Archlinux ?")
             packages_info["error"] = True
             return packages_info
