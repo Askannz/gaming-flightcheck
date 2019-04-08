@@ -8,6 +8,7 @@ from .info.nvidia import get_nvidia_PAT_info
 from .info.display import get_PRIME_sync_info
 from .info.vulkan import get_vulkan_info
 from .distribution_specific.ArchlinuxContext import ArchlinuxContext
+from .distribution_specific.UbuntuContext import UbuntuContext
 
 
 def print_system_info():
@@ -25,7 +26,11 @@ def print_system_info():
     system_info["PRIME_sync"] = get_PRIME_sync_info(system_info)
     system_info["vulkan"] = get_vulkan_info(system_info)
 
-    distribution_context = ArchlinuxContext()
+    if system_info["distribution"]["name"] == "archlinux":
+        distribution_context = ArchlinuxContext()
+    elif system_info["distribution"]["name"] == "ubuntu":
+        distribution_context = UbuntuContext()
+
     system_info["distribution_specific"] = {}
     system_info["distribution_specific"]["packages"] = distribution_context.get_packages_info(system_info)
 
@@ -96,20 +101,51 @@ def print_system_info():
 
     packages_info = system_info["distribution_specific"]["packages"]
 
-    print("")
-    print("Archlinux packages :")
+    if system_info["distribution"]["name"] == "archlinux":
 
-    print("\tMultilib repository enabled : %s"
-          % ("yes" if packages_info["multilib"]["enabled"] else "no"))
+        print("")
+        print("Archlinux packages :")
 
-    print("\tInstalled :")
-    for package in packages_info["packages_dict"].keys():
-        single_package_info = packages_info["packages_dict"][package]
-        if single_package_info["installed"]:
-            print("\t\t%s (%s)" % (package, single_package_info["version"]))
+        print("\tMultilib repository enabled : %s"
+              % ("yes" if packages_info["multilib"]["enabled"] else "no"))
 
-    print("\tNot installed :")
-    for package in packages_info["packages_dict"].keys():
-        single_package_info = packages_info["packages_dict"][package]
-        if not single_package_info["installed"]:
-            print("\t\t%s" % package)
+        print("\tInstalled :")
+        for package in packages_info["packages_dict"].keys():
+            single_package_info = packages_info["packages_dict"][package]
+            if single_package_info["installed"]:
+                print("\t\t%s (%s)" % (package, single_package_info["version"]))
+
+        print("\tNot installed :")
+        for package in packages_info["packages_dict"].keys():
+            single_package_info = packages_info["packages_dict"][package]
+            if not single_package_info["installed"]:
+                print("\t\t%s" % package)
+
+    elif system_info["distribution"]["name"] == "ubuntu":
+
+        print("")
+        print("Ubuntu packages :")
+
+        print("\ti386 architecture enabled : %s"
+              % ("yes" if packages_info["i386_arch"]["enabled"] else "no"))
+
+        print("\tInstalled :")
+        for package_name_pattern in packages_info["packages_dict"].keys():
+
+            if len(packages_info["packages_dict"][package_name_pattern]["packages"]) == 0:
+                continue
+
+            for package_name in packages_info["packages_dict"][package_name_pattern]["packages"].keys():
+
+                single_package_info = \
+                    packages_info["packages_dict"][package_name_pattern]["packages"][package_name]
+
+                print("\t\t%s (%s, 32bit : %s, 64bit : %s)"
+                      % (package_name, single_package_info["version"],
+                         "yes" if single_package_info["32bit"] else "no",
+                         "yes" if single_package_info["64bit"] else "no"))
+
+        print("\tNot installed :")
+        for package_name_pattern in packages_info["packages_dict"].keys():
+            if len(packages_info["packages_dict"][package_name_pattern]["packages"]) == 0:
+                print("\t\t%s" % package_name_pattern)
