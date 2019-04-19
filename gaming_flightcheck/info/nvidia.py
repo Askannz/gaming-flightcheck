@@ -28,7 +28,7 @@ def parse_nvidia_PAT_usage():
 
             colon_index = line_stripped.find(":")
 
-            if colon_index == -1:
+            if colon_index == -1 or colon_index == len(line_stripped) - 1:
                 print("ERROR : nvidia PAT : cannot parse UsePageAttributeTable line : %s" % line.strip())
                 nvidia_PAT_info["error"] = True
                 return nvidia_PAT_info

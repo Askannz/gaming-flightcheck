@@ -34,7 +34,7 @@ def parse_xrandr_PRIME_sync():
 
             colon_index = line_stripped.find(":")
 
-            if colon_index == -1:
+            if colon_index == -1 or colon_index == len(line_stripped) - 1:
                 print("ERROR : PRIME sync : cannot parse \"PRIME Synchronization\" line : %s" % line.strip())
                 PRIME_sync_info["error"] = True
                 return PRIME_sync_info

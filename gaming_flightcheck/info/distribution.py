@@ -43,7 +43,7 @@ def parse_distribution_from_command(bash_command, key):
 
             colon_index = line_nospaces.find(":")
 
-            if colon_index == -1:
+            if colon_index == -1 or colon_index == len(line_nospaces) - 1:
                 _print_distribution_error("%s : cannot parse \"%s\" line : %s" % (bash_command, key, line))
                 distribution_info["error"] = True
                 return distribution_info
