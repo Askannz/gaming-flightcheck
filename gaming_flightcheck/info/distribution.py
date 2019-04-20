@@ -7,12 +7,12 @@ def get_distribution_info(system_info):
 
     assert "available_executables" in system_info.keys()
 
-    if "hostnamectl" in system_info["available_executables"]:
+    if system_info["available_executables"]["hostnamectl"]:
         distribution_info = parse_distribution_from_command("hostnamectl", "Operating System")
         if not distribution_info["error"]:
             return distribution_info
 
-    if "lsb_release" in system_info["available_executables"]:
+    if system_info["available_executables"]["lsb_release"]:
         distribution_info = parse_distribution_from_command("lsb_release -d", "Description")
         if not distribution_info["error"]:
             return distribution_info

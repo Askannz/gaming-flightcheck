@@ -6,7 +6,7 @@ def is_library_installed(system_info, lib_name):
 
     assert "available_executables" in system_info.keys()
 
-    if "ldconfig" not in system_info["available_executables"]:
+    if not system_info["available_executables"]["ldconfig"]:
         library_info = _make_empty_library_info()
         library_info["error"] = True
         return library_info

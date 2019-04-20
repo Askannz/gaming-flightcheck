@@ -42,8 +42,7 @@ def _get_extensions_info(system_info, ICDs_info):
 
     extensions_info = _get_emtpy_extensions_info()
 
-    if "vulkaninfo" not in system_info["available_executables"] or \
-            ICDs_info["error"]:
+    if not system_info["available_executables"]["vulkaninfo"] or ICDs_info["error"]:
         extensions_info["error"] = True
         return extensions_info
 

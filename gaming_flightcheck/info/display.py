@@ -5,7 +5,7 @@ def get_PRIME_sync_info(system_info):
 
     assert "available_executables" in system_info.keys()
 
-    if "xrandr" not in system_info["available_executables"]:
+    if not system_info["available_executables"]["xrandr"]:
         PRIME_sync_info = _make_empty_PRIME_sync_info()
         PRIME_sync_info["error"] = True
         return PRIME_sync_info

@@ -6,7 +6,7 @@ def get_GPUs_PCI_info(system_info):
 
     assert "available_executables" in system_info.keys()
 
-    if "lspci" not in system_info["available_executables"]:
+    if not system_info["available_executables"]["lspci"]:
         GPUs_PCI_info = _make_empty_GPUs_PCI_info()
         GPUs_PCI_info["error"] = True
         return GPUs_PCI_info

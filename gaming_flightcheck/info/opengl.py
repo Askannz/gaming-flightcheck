@@ -6,7 +6,7 @@ def get_opengl_info(system_info):
 
     assert "available_executables" in system_info.keys()
 
-    if "lspci" not in system_info["available_executables"]:
+    if not system_info["available_executables"]["lspci"]:
         opengl_info = _make_empty_opengl_info()
         opengl_info["error"] = True
         return opengl_info
