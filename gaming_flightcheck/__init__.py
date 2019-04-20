@@ -93,11 +93,16 @@ def print_system_info():
 
     ICDs_info = system_info["vulkan"]["ICDs"]
     print("\tAvailable ICDs :")
-    for file_name in ICDs_info["files_list"]:
-        print("\t\t%s" % file_name)
+    for ICD_filename in ICDs_info["files_list"]:
+        print("\t\t%s" % ICD_filename)
 
-    vulkaninfo_status_info = system_info["vulkan"]["vulkaninfo_status"]
-    print("\tvulkaninfo error : %s" % ("no" if vulkaninfo_status_info["status_ok"] else "yes"))
+    extensions_info = system_info["vulkan"]["extensions"]
+    print("\tExtensions :")
+    for ICD_filename in extensions_info["by_ICD"].keys():
+        print("\t\t%s :" % ICD_filename)
+        extensions_dict = extensions_info["by_ICD"][ICD_filename]["extensions"]
+        for extension_name in extensions_dict.keys():
+            print("\t\t\t%s : %s" % (extension_name, "yes" if extensions_dict[extension_name] else "no"))
 
     packages_info = system_info["distribution_specific"]["packages"]
 
