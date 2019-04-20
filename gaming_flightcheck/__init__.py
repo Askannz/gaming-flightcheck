@@ -1,10 +1,26 @@
+import sys
 from .info import get_system_info
 
 
 def main():
 
     system_info = get_system_info()
+    check_available_executables(system_info)
     print_system_info(system_info)
+
+
+def check_available_executables(system_info):
+
+    REQUIRED_EXECUTABLES = ["ldconfig", "lspci", "glxinfo", "xrandr", "vulkaninfo"]
+
+    for exec_name in REQUIRED_EXECUTABLES:
+        if not system_info["available_executables"][exec_name]:
+            print("ERROR : please install a package that provides the tool %s" % exec_name)
+            sys.exit(1)
+
+    if not (system_info["available_executables"]["lsb_release"] or system_info["available_executables"]["hostnamectl"]):
+        print("ERROR : please install a package that provides either lsb_release or hostnamectl")
+        sys.exit(1)
 
 
 def print_system_info(system_info):
