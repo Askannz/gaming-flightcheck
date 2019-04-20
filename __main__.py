@@ -1,3 +1,3 @@
-from gaming_flightcheck import print_system_info
+from gaming_flightcheck import main
 
-print_system_info()
+main()
