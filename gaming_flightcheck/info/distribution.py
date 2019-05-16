@@ -1,7 +1,5 @@
 from ..utils.bash import exec_bash
 
-SUPPORTED_DISTRIBUTIONS_LIST = ["archlinux", "ubuntu"]
-
 
 def get_distribution_info(system_info):
 
@@ -50,16 +48,9 @@ def parse_distribution_from_command(bash_command, key):
 
             distribution_str = line_nospaces[colon_index+1:]
 
-            distribution_str_lower = distribution_str.lower()
+            distribution_info["name"] = distribution_str.lower()
 
-            for dist_name in SUPPORTED_DISTRIBUTIONS_LIST:
-                if dist_name in distribution_str_lower:
-                    distribution_info["name"] = dist_name
-                    return distribution_info
-            else:
-                _print_distribution_error("%s : distribution %s is unsupported." % (bash_command, distribution_str))
-                distribution_info["error"] = True
-                return distribution_info
+            return distribution_info
 
     else:
 
