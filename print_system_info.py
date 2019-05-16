@@ -19,13 +19,27 @@ def _check_available_executables(system_info):
 
     REQUIRED_EXECUTABLES = ["ldconfig", "lspci", "glxinfo", "xrandr", "vulkaninfo"]
 
+    executables_ok = True
     for exec_name in REQUIRED_EXECUTABLES:
         if not system_info["available_executables"][exec_name]:
-            print("ERROR : please install a package that provides the tool %s" % exec_name)
-            sys.exit(1)
+            executables_ok = False
+            break
 
-    if not (system_info["available_executables"]["lsb_release"] or system_info["available_executables"]["hostnamectl"]):
-        print("ERROR : please install a package that provides either lsb_release or hostnamectl")
+    if not executables_ok:
+
+        print("\nThis tool requires the following executables to be available :")
+
+        for exec_name in REQUIRED_EXECUTABLES:
+            installed_str = ("installed" if system_info["available_executables"][exec_name] else "not installed")
+            print("- %s (%s)" % (exec_name, installed_str))
+
+        distribution_tool_installed = (system_info["available_executables"]["lsb_release"] or
+                                       system_info["available_executables"]["hostnamectl"])
+        installed_str = ("installed" if distribution_tool_installed else "not installed")
+        print("- either lsb_release or hostnamectl (%s)" % installed_str)
+
+        print("\nPlease install the packages providing those executables and run the program again.\n")
+
         sys.exit(1)
 
 
