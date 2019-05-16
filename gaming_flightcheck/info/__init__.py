@@ -7,8 +7,7 @@ from .limits import get_limits_info
 from .nvidia import get_nvidia_PAT_info
 from .display import get_PRIME_sync_info
 from .vulkan import get_vulkan_info
-from ..distribution_specific.ArchlinuxContext import ArchlinuxContext
-from ..distribution_specific.UbuntuContext import UbuntuContext
+from ..distribution_specific import get_distribution_context
 
 
 def get_system_info():
@@ -26,10 +25,7 @@ def get_system_info():
     system_info["PRIME_sync"] = get_PRIME_sync_info(system_info)
     system_info["vulkan"] = get_vulkan_info(system_info)
 
-    if system_info["distribution"]["name"] == "archlinux":
-        distribution_context = ArchlinuxContext()
-    elif system_info["distribution"]["name"] == "ubuntu":
-        distribution_context = UbuntuContext()
+    distribution_context = get_distribution_context(system_info)
 
     system_info["distribution_specific"] = {}
     system_info["distribution_specific"]["packages"] = distribution_context.get_packages_info(system_info)
