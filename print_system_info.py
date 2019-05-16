@@ -1,15 +1,16 @@
+#!/usr/bin/env python
 import sys
-from .info import get_system_info
+from gaming_flightcheck.info import get_system_info
 
 
 def main():
 
     system_info = get_system_info()
-    check_available_executables(system_info)
-    print_system_info(system_info)
+    _check_available_executables(system_info)
+    _print_system_info(system_info)
 
 
-def check_available_executables(system_info):
+def _check_available_executables(system_info):
 
     REQUIRED_EXECUTABLES = ["ldconfig", "lspci", "glxinfo", "xrandr", "vulkaninfo"]
 
@@ -23,7 +24,7 @@ def check_available_executables(system_info):
         sys.exit(1)
 
 
-def print_system_info(system_info):
+def _print_system_info(system_info):
 
     distribution_info = system_info["distribution"]
 
@@ -145,3 +146,7 @@ def print_system_info(system_info):
         for package_name_pattern in packages_info["packages_dict"].keys():
             if len(packages_info["packages_dict"][package_name_pattern]["packages"]) == 0:
                 print("\t\t%s" % package_name_pattern)
+
+
+if __name__ == "__main__":
+    main()
