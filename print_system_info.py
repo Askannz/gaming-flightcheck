@@ -106,51 +106,65 @@ def _print_system_info(system_info):
     if system_info["distribution"]["name"] == "archlinux":
 
         print("")
-        print("Archlinux packages :")
-
-        print("\tMultilib repository enabled : %s"
-              % ("yes" if packages_info["multilib"]["enabled"] else "no"))
-
-        print("\tInstalled :")
-        for package in packages_info["packages_dict"].keys():
-            single_package_info = packages_info["packages_dict"][package]
-            if single_package_info["installed"]:
-                print("\t\t%s (%s)" % (package, single_package_info["version"]))
-
-        print("\tNot installed :")
-        for package in packages_info["packages_dict"].keys():
-            single_package_info = packages_info["packages_dict"][package]
-            if not single_package_info["installed"]:
-                print("\t\t%s" % package)
+        _print_archlinux_packages(packages_info)
 
     elif system_info["distribution"]["name"] == "ubuntu":
 
         print("")
-        print("Ubuntu packages :")
+        _print_ubuntu_packages(packages_info)
 
-        print("\ti386 architecture enabled : %s"
-              % ("yes" if packages_info["i386_arch"]["enabled"] else "no"))
+    else:
+        print("")
+        print("Packages checking is not supported for this distribution.")
 
-        print("\tInstalled :")
-        for package_name_pattern in packages_info["packages_dict"].keys():
 
-            if len(packages_info["packages_dict"][package_name_pattern]["packages"]) == 0:
-                continue
+def _print_archlinux_packages(packages_info):
 
-            for package_name in packages_info["packages_dict"][package_name_pattern]["packages"].keys():
+    print("Archlinux packages :")
 
-                single_package_info = \
-                    packages_info["packages_dict"][package_name_pattern]["packages"][package_name]
+    print("\tMultilib repository enabled : %s"
+          % ("yes" if packages_info["multilib"]["enabled"] else "no"))
 
-                print("\t\t%s (%s, 32bit : %s, 64bit : %s)"
-                      % (package_name, single_package_info["version"],
-                         "yes" if single_package_info["32bit"] else "no",
-                         "yes" if single_package_info["64bit"] else "no"))
+    print("\tInstalled :")
+    for package in packages_info["packages_dict"].keys():
+        single_package_info = packages_info["packages_dict"][package]
+        if single_package_info["installed"]:
+            print("\t\t%s (%s)" % (package, single_package_info["version"]))
 
-        print("\tNot installed :")
-        for package_name_pattern in packages_info["packages_dict"].keys():
-            if len(packages_info["packages_dict"][package_name_pattern]["packages"]) == 0:
-                print("\t\t%s" % package_name_pattern)
+    print("\tNot installed :")
+    for package in packages_info["packages_dict"].keys():
+        single_package_info = packages_info["packages_dict"][package]
+        if not single_package_info["installed"]:
+            print("\t\t%s" % package)
+
+
+def _print_ubuntu_packages(packages_info):
+
+    print("Ubuntu packages :")
+
+    print("\ti386 architecture enabled : %s"
+          % ("yes" if packages_info["i386_arch"]["enabled"] else "no"))
+
+    print("\tInstalled :")
+    for package_name_pattern in packages_info["packages_dict"].keys():
+
+        if len(packages_info["packages_dict"][package_name_pattern]["packages"]) == 0:
+            continue
+
+        for package_name in packages_info["packages_dict"][package_name_pattern]["packages"].keys():
+
+            single_package_info = \
+                packages_info["packages_dict"][package_name_pattern]["packages"][package_name]
+
+            print("\t\t%s (%s, 32bit : %s, 64bit : %s)"
+                  % (package_name, single_package_info["version"],
+                     "yes" if single_package_info["32bit"] else "no",
+                     "yes" if single_package_info["64bit"] else "no"))
+
+    print("\tNot installed :")
+    for package_name_pattern in packages_info["packages_dict"].keys():
+        if len(packages_info["packages_dict"][package_name_pattern]["packages"]) == 0:
+            print("\t\t%s" % package_name_pattern)
 
 
 if __name__ == "__main__":
