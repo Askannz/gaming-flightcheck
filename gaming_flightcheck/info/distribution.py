@@ -53,7 +53,7 @@ def parse_distribution_from_command(bash_command, key):
 
             for distrib_name in KNOWN_DISTRIBUTIONS:
                 if distrib_name in distribution_str_lower:
-                    distribution_info["name"] = distribution_str_lower
+                    distribution_info["name"] = distrib_name
                     break
             else:
                 distribution_info["name"] = distribution_str_lower
