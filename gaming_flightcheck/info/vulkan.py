@@ -48,6 +48,9 @@ def _get_extensions_info(system_info, ICDs_info):
 
     for ICD_filename in ICDs_info["files_list"]:
 
+        if "i686" in ICD_filename:
+            continue  # vulkaninfo does not work with 32-bit ICDs
+
         extensions_info["by_ICD"][ICD_filename] = _get_empty_ICD_extensions_info()
 
         returncode, vulkaninfo_output, stderr = exec_bash("VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/%s "
