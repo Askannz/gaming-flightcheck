@@ -72,13 +72,13 @@ def _parse_opengl_version_string(opengl_info, line):
         if len(version_string_items) != 3:
             _print_glxinfo_error("%d items in version string" % len(version_string_items))
             opengl_info["error"] = True
-            return opengl_info
+            return found_version_string, opengl_info
 
         opengl_version = version_string_items[0]
         if not re.fullmatch("[0-9\\.]+", opengl_version):
             _print_glxinfo_error("OpenGL version is \"%s\"" % opengl_version)
             opengl_info["error"] = True
-            return opengl_info
+            return found_version_string, opengl_info
         else:
             opengl_info["opengl_version"] = opengl_version
 
