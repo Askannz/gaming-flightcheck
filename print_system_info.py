@@ -11,8 +11,8 @@ def main():
         sys.exit(1)
 
     system_info = get_system_info()
-    _check_available_executables(system_info)
     _print_system_info(system_info)
+    _check_available_executables(system_info)
 
 
 def _check_available_executables(system_info):
@@ -27,7 +27,8 @@ def _check_available_executables(system_info):
 
     if not executables_ok:
 
-        print("\nThis tool requires the following executables to be available :")
+        print("\nThe full system info cannot be printed because some executables are missing. Here is the list"
+              " of executables this tool uses :\n")
 
         for exec_name in REQUIRED_EXECUTABLES:
             installed_str = ("installed" if system_info["available_executables"][exec_name] else "not installed")
@@ -39,8 +40,6 @@ def _check_available_executables(system_info):
         print("- either lsb_release or hostnamectl (%s)" % installed_str)
 
         print("\nPlease install the packages providing those executables and run the program again.\n")
-
-        sys.exit(1)
 
 
 def _print_system_info(system_info):
