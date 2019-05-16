@@ -1,5 +1,7 @@
 from ..utils.bash import exec_bash
 
+KNOWN_DISTRIBUTIONS = ["archlinux", "manjaro", "ubuntu"]
+
 
 def get_distribution_info(system_info):
 
@@ -47,8 +49,14 @@ def parse_distribution_from_command(bash_command, key):
                 return distribution_info
 
             distribution_str = line_nospaces[colon_index+1:]
+            distribution_str_lower = distribution_str.lower()
 
-            distribution_info["name"] = distribution_str.lower()
+            for distrib_name in KNOWN_DISTRIBUTIONS:
+                if distrib_name in distribution_str_lower:
+                    distribution_info["name"] = distribution_str_lower
+                    break
+            else:
+                distribution_info["name"] = distribution_str_lower
 
             return distribution_info
 
