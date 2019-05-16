@@ -3,12 +3,15 @@ import os
 
 def get_nvidia_PAT_info(system_info):
 
-    return parse_nvidia_PAT_usage()
+    return parse_nvidia_PAT_usage(system_info)
 
 
-def parse_nvidia_PAT_usage():
+def parse_nvidia_PAT_usage(system_info):
 
     nvidia_PAT_info = _make_empty_nvidia_PAT_info()
+
+    if not _check_nvidia_module_active(system_info):
+        return nvidia_PAT_info
 
     nvidia_parameters_path = "/proc/driver/nvidia/params"
 
@@ -54,6 +57,20 @@ def parse_nvidia_PAT_usage():
         print("ERROR : nvidia PAT : Cannot find UsePageAttributeTable attribute")
         nvidia_PAT_info["error"] = True
         return nvidia_PAT_info
+
+
+def _check_nvidia_module_active(system_info):
+
+    if system_info["GPUs_PCI"]["error"]:
+        return False
+
+    gpus_pci_map = system_info["GPUs_PCI"]["pci_map"]
+
+    for bus_id in gpus_pci_map.keys():
+        if gpus_pci_map[bus_id]["active_module"] == "nvidia":
+            return True
+    else:
+        return False
 
 
 def _make_empty_nvidia_PAT_info():
