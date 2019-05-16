@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 import sys
+import os
 from gaming_flightcheck.info import get_system_info
 
 
 def main():
+
+    if os.geteuid() == 0:
+        print("You should not run this script as root ! Exiting.")
+        sys.exit(1)
 
     system_info = get_system_info()
     _check_available_executables(system_info)
