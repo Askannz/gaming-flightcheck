@@ -2,7 +2,7 @@
 
 A diagnostic tool to help Linux users troubleshoot issues with their gaming setups.
 
-Modern Linux gaming has quite a few pitfalls that newcomers are too often unaware of, like for instance old AMD cards requiring a manual kernel option, orthe default drivers bundled with the distribution being unsuitable for gaming.
+Modern Linux gaming has quite a few pitfalls that newcomers are too often unaware of, like for instance old AMD cards requiring a manual kernel option, or the default drivers bundled with the distribution being unsuitable for gaming.
 
 That projects aims to provide a newbie-friendly, distro-agnotic tool to spot the most common issues and suggest appropriate fixes.
 
