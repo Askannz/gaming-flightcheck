@@ -48,7 +48,8 @@ def parse_nvidia_PAT_usage(system_info):
                 return nvidia_PAT_info
 
             if status_int not in [0, 1]:
-                print("ERROR : nvidia PAT : UsePageAttributeTable value is not boolean in line : %s" % line.strip())
+                # This is a known issue : the PAT value will be equal to 2^16 - 1 on some systems.
+                # Why ? Only Nvidia knows !
                 nvidia_PAT_info["error"] = True
                 return nvidia_PAT_info
 
