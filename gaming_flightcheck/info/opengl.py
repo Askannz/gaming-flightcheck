@@ -55,38 +55,34 @@ def _parse_opengl_version_string(opengl_info, line):
 
     found_version_string = False
 
-    opengl_version_key = "OpenGL version string:"
+    opengl_version_key = "OpenGL version string: "
 
     string_index = line.find(opengl_version_key)
 
-    if string_index != -1:
+    if string_index != -1 and string_index != len(line) - 1:
 
         found_version_string = True
 
         version_string = line[string_index+len(opengl_version_key):]
-        version_string_items = version_string.split(" ")
 
-        version_string_items = [it.replace(" ", "") for it in version_string_items]
-        version_string_items = [it for it in version_string_items if it != ""]
+        first_space_index = version_string.find(" ")
 
-        if len(version_string_items) != 3:
-            _print_glxinfo_error("%d items in version string" % len(version_string_items))
+        if first_space_index == -1 or first_space_index == len(version_string) - 1:
+            _print_glxinfo_error("no vendor-specific string in OpenGL version : %s" % version_string)
             opengl_info["error"] = True
             return found_version_string, opengl_info
 
-        opengl_version = version_string_items[0]
+        opengl_version = version_string[:first_space_index]
+
         if not re.fullmatch("[0-9\\.]+", opengl_version):
+            print(version_string)
             _print_glxinfo_error("OpenGL version is \"%s\"" % opengl_version)
             opengl_info["error"] = True
             return found_version_string, opengl_info
         else:
             opengl_info["opengl_version"] = opengl_version
 
-        provider = version_string_items[1]
-        opengl_info["opengl_provider"] = provider
-
-        provider_version = version_string_items[2]
-        opengl_info["opengl_provider_version"] = provider_version
+        opengl_info["opengl_vendor_version"] = version_string[first_space_index+1:]
 
     return found_version_string, opengl_info
 
@@ -95,11 +91,11 @@ def _parse_opengl_renderer_string(opengl_info, line):
 
     found_renderer_string = False
 
-    opengl_renderer_key = "OpenGL renderer string:"
+    opengl_renderer_key = "OpenGL renderer string: "
 
     string_index = line.find(opengl_renderer_key)
 
-    if string_index != -1:
+    if string_index != -1 and string_index != len(line) - 1:
 
         found_renderer_string = True
 
@@ -111,7 +107,7 @@ def _parse_opengl_renderer_string(opengl_info, line):
 
 def _make_empty_opengl_info():
     return {"error": False, "opengl_version": "",
-            "opengl_provider": "", "opengl_provider_version": "",
+            "opengl_vendor_version": "",
             "renderer": ""}
 
 
