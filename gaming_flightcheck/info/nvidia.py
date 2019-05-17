@@ -8,6 +8,8 @@ def get_nvidia_PAT_info(system_info):
 
 def parse_nvidia_PAT_usage(system_info):
 
+    assert "GPUs_PCI" in system_info.keys()
+
     nvidia_PAT_info = _make_empty_nvidia_PAT_info()
 
     if not _check_nvidia_module_active(system_info):
