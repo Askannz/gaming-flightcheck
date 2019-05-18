@@ -1,18 +1,38 @@
+import os
 from .. import utils
 
 
-def get_executables_availability(exec_names_list):
+def get_executables_paths(exec_names_list):
 
-    executables_availability = {}
+    paths = {}
 
     for exec_name in exec_names_list:
-        executables_availability[exec_name] = is_executable_in_path(exec_name)
 
-    return executables_availability
+        exec_path = get_executable_path_from_PATH(exec_name)
+
+        if exec_path is None:
+            exec_path = get_executable_path_in_sbin(exec_name)
+
+        paths[exec_name] = exec_path
+
+    return paths
 
 
-def is_executable_in_path(exec_name):
+def get_executable_path_from_PATH(exec_name):
 
-    returncode, _, _ = utils.bash.exec_bash("which %s" % exec_name)
+    returncode, stdout, _ = utils.bash.exec_bash("which %s" % exec_name)
 
-    return (returncode == 0)
+    if returncode != 0:
+        return stdout.strip()
+    else:
+        return None
+
+
+def get_executable_path_in_sbin(exec_name):
+
+    sbin_exec_path = os.path.join("/", "sbin", exec_name)
+
+    if os.path.isfile(sbin_exec_path):
+        return sbin_exec_path
+    else:
+        return None

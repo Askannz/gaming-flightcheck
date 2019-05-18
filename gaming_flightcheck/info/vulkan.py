@@ -38,11 +38,11 @@ def _get_ICDs_info(system_info):
 
 def _get_extensions_info(system_info, ICDs_info):
 
-    assert "available_executables" in system_info.keys()
+    assert "executables_paths" in system_info.keys()
 
     extensions_info = _get_emtpy_extensions_info()
 
-    if not system_info["available_executables"]["vulkaninfo"] or ICDs_info["error"]:
+    if not system_info["executables_paths"]["vulkaninfo"] or ICDs_info["error"]:
         extensions_info["error"] = True
         return extensions_info
 
@@ -53,8 +53,8 @@ def _get_extensions_info(system_info, ICDs_info):
 
         extensions_info["by_ICD"][ICD_filename] = _get_empty_ICD_extensions_info()
 
-        returncode, vulkaninfo_output, stderr = exec_bash("VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/%s "
-                                                          "vulkaninfo" % ICD_filename)
+        returncode, vulkaninfo_output, stderr = exec_bash("VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/%s %s"
+                                                          % (ICD_filename, system_info["executables_paths"]["vulkaninfo"]))
 
         if returncode != 0:
             _print_vulkaninfo_warning("error running vulkaninfo with ICD %s : %s" % (ICD_filename, stderr))

@@ -4,36 +4,36 @@ from ..utils.bash import exec_bash
 
 def get_GPUs_PCI_info(system_info):
 
-    assert "available_executables" in system_info.keys()
+    assert "executables_paths" in system_info.keys()
 
-    if not system_info["available_executables"]["lspci"]:
+    if not system_info["executables_paths"]["lspci"]:
         GPUs_PCI_info = _make_empty_GPUs_PCI_info()
         GPUs_PCI_info["error"] = True
         return GPUs_PCI_info
 
-    GPUs_PCI_info = parse_lspci_GPUs_PCI()
+    GPUs_PCI_info = parse_lspci_GPUs_PCI(system_info)
 
     return GPUs_PCI_info
 
 
-def parse_lspci_GPUs_PCI():
+def parse_lspci_GPUs_PCI(system_info):
 
     GPUs_PCI_info = _make_empty_GPUs_PCI_info()
 
-    gpus_pci_map = _get_gpus_pci_ids()
-    gpus_pci_map = _add_gpu_names(gpus_pci_map)
-    gpus_pci_map = _add_gpu_kernel_drivers(gpus_pci_map)
+    gpus_pci_map = _get_gpus_pci_ids(system_info)
+    gpus_pci_map = _add_gpu_names(system_info, gpus_pci_map)
+    gpus_pci_map = _add_gpu_kernel_drivers(system_info, gpus_pci_map)
 
     GPUs_PCI_info["pci_map"] = gpus_pci_map
 
     return GPUs_PCI_info
 
 
-def _get_gpus_pci_ids():
+def _get_gpus_pci_ids(system_info):
 
     VENDORS_ID_MAP = {"8086": "Intel", "1002": "AMD", "10de": "Nvidia"}
 
-    _, lspci_output, _ = exec_bash("lspci -n")
+    _, lspci_output, _ = exec_bash("%s -n" % system_info["executables_paths"]["lspci"])
 
     gpus_pci_map = {}
 
@@ -69,9 +69,9 @@ def _get_gpus_pci_ids():
     return gpus_pci_map
 
 
-def _add_gpu_names(gpus_pci_map):
+def _add_gpu_names(system_info, gpus_pci_map):
 
-    _, lspci_output, _ = exec_bash("lspci -m")
+    _, lspci_output, _ = exec_bash("%s -m" % system_info["executables_paths"]["lspci"])
 
     for line in lspci_output.splitlines():
 
@@ -110,9 +110,9 @@ def _add_gpu_names(gpus_pci_map):
     return gpus_pci_map
 
 
-def _add_gpu_kernel_drivers(gpus_pci_map):
+def _add_gpu_kernel_drivers(system_info, gpus_pci_map):
 
-    _, lspci_output, _ = exec_bash("lspci -nk")
+    _, lspci_output, _ = exec_bash("%s -nk" % system_info["executables_paths"]["lspci"])
 
     current_bus_id_str = ""
     for i, line in enumerate(lspci_output.splitlines()):

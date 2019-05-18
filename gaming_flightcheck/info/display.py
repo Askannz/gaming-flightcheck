@@ -3,23 +3,23 @@ from ..utils.bash import exec_bash
 
 def get_PRIME_sync_info(system_info):
 
-    assert "available_executables" in system_info.keys()
+    assert "executables_paths" in system_info.keys()
 
-    if not system_info["available_executables"]["xrandr"]:
+    if not system_info["executables_paths"]["xrandr"]:
         PRIME_sync_info = _make_empty_PRIME_sync_info()
         PRIME_sync_info["error"] = True
         return PRIME_sync_info
 
-    PRIME_sync_info = parse_xrandr_PRIME_sync()
+    PRIME_sync_info = parse_xrandr_PRIME_sync(system_info)
 
     return PRIME_sync_info
 
 
-def parse_xrandr_PRIME_sync():
+def parse_xrandr_PRIME_sync(system_info):
 
     PRIME_sync_info = _make_empty_PRIME_sync_info()
 
-    returncode, xrandr_output, stderr = exec_bash("xrandr --verbose")
+    returncode, xrandr_output, stderr = exec_bash("%s --verbose" % system_info["executables_paths"]["xrandr"])
 
     if returncode != 0:
         print("ERROR : PRIME sync : xrandr returned an error : %s" % stderr)

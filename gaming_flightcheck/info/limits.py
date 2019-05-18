@@ -10,7 +10,7 @@ def parse_ulimits():
 
     limits_info = _make_empty_limits_info()
 
-    returncode, ulimit_output, stderr = exec_bash("ulimit -Hn")
+    returncode, ulimit_output, stderr = exec_bash("ulimit -Hn")  # ulimit is not an executable
 
     ulimit_output = ulimit_output.strip()
 

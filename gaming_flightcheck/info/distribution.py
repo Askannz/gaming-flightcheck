@@ -5,15 +5,17 @@ KNOWN_DISTRIBUTIONS = ["archlinux", "manjaro", "ubuntu"]
 
 def get_distribution_info(system_info):
 
-    assert "available_executables" in system_info.keys()
+    assert "executables_paths" in system_info.keys()
 
-    if system_info["available_executables"]["hostnamectl"]:
-        distribution_info = parse_distribution_from_command("hostnamectl", "Operating System")
+    if system_info["executables_paths"]["hostnamectl"]:
+        bash_command = system_info["executables_paths"]["hostnamectl"]
+        distribution_info = parse_distribution_from_command(bash_command, "Operating System")
         if not distribution_info["error"]:
             return distribution_info
 
-    if system_info["available_executables"]["lsb_release"]:
-        distribution_info = parse_distribution_from_command("lsb_release -d", "Description")
+    if system_info["executables_paths"]["lsb_release"]:
+        bash_command = "%s -d" % system_info["executables_paths"]["lsb_release"]
+        distribution_info = parse_distribution_from_command(bash_command, "Description")
         if not distribution_info["error"]:
             return distribution_info
 

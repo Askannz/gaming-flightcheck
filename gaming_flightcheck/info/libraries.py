@@ -4,23 +4,23 @@ from ..utils.bash import exec_bash
 
 def is_library_installed(system_info, lib_name):
 
-    assert "available_executables" in system_info.keys()
+    assert "executables_paths" in system_info.keys()
 
-    if not system_info["available_executables"]["ldconfig"]:
+    if not system_info["executables_paths"]["ldconfig"]:
         library_info = _make_empty_library_info()
         library_info["error"] = True
         return library_info
 
-    library_info = parse_ldconfig(lib_name)
+    library_info = parse_ldconfig(system_info, lib_name)
 
     return library_info
 
 
-def parse_ldconfig(lib_name):
+def parse_ldconfig(system_info, lib_name):
 
     library_info = _make_empty_library_info()
 
-    returncode, ldconfig_output, stderr = exec_bash("ldconfig -p")
+    returncode, ldconfig_output, stderr = exec_bash("%s -p" % system_info["executables_paths"]["ldconfig"])
 
     if returncode != 0:
         _print_ldconfig_error(lib_name, "ldconfig returned an error : %s" % stderr)

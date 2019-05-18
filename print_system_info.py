@@ -21,7 +21,7 @@ def _check_available_executables(system_info):
 
     executables_ok = True
     for exec_name in REQUIRED_EXECUTABLES:
-        if not system_info["available_executables"][exec_name]:
+        if not system_info["executables_paths"][exec_name]:
             executables_ok = False
             break
 
@@ -31,11 +31,11 @@ def _check_available_executables(system_info):
               " of executables this tool uses :\n")
 
         for exec_name in REQUIRED_EXECUTABLES:
-            installed_str = ("installed" if system_info["available_executables"][exec_name] else "not installed")
+            installed_str = ("installed" if system_info["executables_paths"][exec_name] else "not installed")
             print("- %s (%s)" % (exec_name, installed_str))
 
-        distribution_tool_installed = (system_info["available_executables"]["lsb_release"] or
-                                       system_info["available_executables"]["hostnamectl"])
+        distribution_tool_installed = (system_info["executables_paths"]["lsb_release"] or
+                                       system_info["executables_paths"]["hostnamectl"])
         installed_str = ("installed" if distribution_tool_installed else "not installed")
         print("- either lsb_release or hostnamectl (%s)" % installed_str)
 

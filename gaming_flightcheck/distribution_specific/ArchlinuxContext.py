@@ -1,4 +1,4 @@
-from ..info.executables import is_executable_in_path
+from ..info.executables import get_executables_paths
 from ._DistributionContext import _DistributionContext
 from .package_managers import pacman
 
@@ -15,7 +15,7 @@ class ArchlinuxContext(_DistributionContext):
 
         packages_info = self._get_empty_packages_info()
 
-        if not is_executable_in_path("pacman"):
+        if not get_executables_paths("pacman"):
             print("ERROR : \"pacman\" is not in PATH. "
                   "Is the distribution not Archlinux ?")
             packages_info["error"] = True

@@ -1,4 +1,4 @@
-from ..info.executables import is_executable_in_path
+from ..info.executables import get_executables_paths
 from ._DistributionContext import _DistributionContext
 from .package_managers import apt
 
@@ -11,7 +11,7 @@ class UbuntuContext(_DistributionContext):
 
         packages_info = self._get_empty_packages_info()
 
-        if not is_executable_in_path("dpkg"):
+        if not get_executables_paths("dpkg"):
             print("ERROR : \"dpkg\" is not in PATH. "
                   "Is the distribution not Ubuntu ?")
             packages_info["error"] = True

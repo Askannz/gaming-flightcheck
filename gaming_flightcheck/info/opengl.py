@@ -4,23 +4,23 @@ from ..utils.bash import exec_bash
 
 def get_opengl_info(system_info):
 
-    assert "available_executables" in system_info.keys()
+    assert "executables_paths" in system_info.keys()
 
     if not system_info["executables_paths"]["glxinfo"]:
         opengl_info = _make_empty_opengl_info()
         opengl_info["error"] = True
         return opengl_info
 
-    opengl_info = parse_glxinfo_opengl()
+    opengl_info = parse_glxinfo_opengl(system_info)
 
     return opengl_info
 
 
-def parse_glxinfo_opengl():
+def parse_glxinfo_opengl(system_info):
 
     opengl_info = _make_empty_opengl_info()
 
-    returncode, glxinfo_output, stderr = exec_bash("glxinfo")
+    returncode, glxinfo_output, stderr = exec_bash(system_info["executables_paths"]["glxinfo"])
 
     if returncode != 0:
         _print_glxinfo_error("glxinfo returned an error : %s" % stderr)
