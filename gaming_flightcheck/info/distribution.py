@@ -7,6 +7,8 @@ def get_distribution_info(system_info):
 
     assert "executables_paths" in system_info.keys()
 
+    distribution_info = _make_empty_distribution_info()
+
     if system_info["executables_paths"]["hostnamectl"]:
         bash_command = system_info["executables_paths"]["hostnamectl"]
         distribution_info = parse_distribution_from_command(bash_command, "Operating System")
