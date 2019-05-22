@@ -9,7 +9,7 @@ That projects aims to provide a newbie-friendly, distro-agnotic tool to spot the
 ## TODO list
 
 * ✔️ Basic system info gathering
-* ❌ Distro-specific package checking (only Ubuntu and Archlinux are implemented for now)
+* ❌ Distro-specific package checking
   * ✔️ Archlinux
   * ✔️ Ubuntu
   * ❌ Manjaro
