@@ -39,13 +39,14 @@ class Checklist:
 
         for item_level in ["INFO", "OK", "WARNING", "CRITICAL"]:
 
-            level_folder_path = os.path.join(checklist_pages_folder_path, item_level)
-
-            level_items_list = list(os.listdir(level_folder_path))
-
             available_items_list[item_level] = []
 
-            for item_name in level_items_list:
+            level_folder_path = os.path.join(checklist_pages_folder_path, item_level)
+
+            if not os.path.isdir(level_folder_path):
+                continue
+
+            for item_name in os.listdir(level_folder_path):
                 available_items_list[item_level].append(item_name)
 
         return available_items_list
