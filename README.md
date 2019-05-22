@@ -10,6 +10,13 @@ That projects aims to provide a newbie-friendly, distro-agnotic tool to spot the
 
 * ✔️ Basic system info gathering
 * ❌ Distro-specific package checking (only Ubuntu and Archlinux are implemented for now)
+  * ✔️ Archlinux
+  * ✔️ Ubuntu
+  * ❌ Manjaro
+  * ❌ Pop!\_OS
+  * ❌ Fedora
+  * ❌ Solus
+  * ❌ Others ?
 * ❌ System info analysis and problem detection
 * ❌ Fixes suggestions
 * ❌ User-friendly GUI interface
