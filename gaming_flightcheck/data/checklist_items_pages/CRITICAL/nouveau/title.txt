@@ -1,0 +1,1 @@
+Current GPU running on nouveau
