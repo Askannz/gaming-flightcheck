@@ -29,6 +29,7 @@ def parse_glxinfo_opengl(system_info):
 
     found_version_string = False
     found_renderer_string = False
+    found_vendor_string = False
 
     for line in glxinfo_output.splitlines():
 
@@ -36,6 +37,8 @@ def parse_glxinfo_opengl(system_info):
             found_version_string, opengl_info = _parse_opengl_version_string(opengl_info, line)
         if not found_renderer_string:
             found_renderer_string, opengl_info = _parse_opengl_renderer_string(opengl_info, line)
+        if not found_vendor_string:
+            found_vendor_string, opengl_info = _parse_opengl_vendor_string(opengl_info, line)
 
         if opengl_info["error"] or (found_version_string and found_renderer_string):
             return opengl_info
@@ -104,11 +107,29 @@ def _parse_opengl_renderer_string(opengl_info, line):
 
     return found_renderer_string, opengl_info
 
+def _parse_opengl_vendor_string(opengl_info, line):
+
+    found_vendor_string = False
+
+    opengl_vendor_key = "OpenGL vendor string: "
+
+    string_index = line.find(opengl_vendor_key)
+
+    if string_index != -1 and string_index != len(line) - 1:
+
+        found_vendor_string = True
+
+        vendor_string = line[string_index+len(opengl_vendor_key):]
+        opengl_info["vendor"] = vendor_string
+
+    return found_vendor_string, opengl_info
+
 
 def _make_empty_opengl_info():
     return {"error": False, "opengl_version": "",
             "opengl_vendor_version": "",
-            "renderer": ""}
+            "renderer": "",
+            "vendor": ""}
 
 
 def _print_glxinfo_error(msg):

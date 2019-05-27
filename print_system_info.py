@@ -65,6 +65,7 @@ def _print_system_info(system_info):
     print("")
     print("OpenGL :")
     print("\tRenderer: %s" % opengl_info["renderer"])
+    print("\tVendor: %s" % opengl_info["vendor"])
     print("\tOpenGL version: %s" % opengl_info["opengl_version"])
     print("\tOpenGL vendor version: %s" % opengl_info["opengl_vendor_version"])
 
