@@ -29,6 +29,7 @@ def _get_ICDs_info(system_info):
     ICDs_folder_path = "/usr/share/vulkan/icd.d/"
 
     if not os.path.isdir(ICDs_folder_path):
+        ICDs_info["error"] = True
         return ICDs_info
 
     ICDs_info["files_list"] = list(os.listdir(ICDs_folder_path))
