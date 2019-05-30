@@ -57,7 +57,7 @@ def _get_ICDs_info(system_info):
             _print_vulkaninfo_error("ICD %s : cannot find library at %s" % (ICD_filename, library_path))
             continue
 
-        arch = "x32" if res["32-bit"] else "x64"
+        arch = "32bit" if res["32bit"] else "64bit"
         ICDs_info["files_list"][ICD_filename] = {"arch": arch}
 
     return ICDs_info
@@ -88,7 +88,7 @@ def _get_extensions_info(system_info, ICDs_info):
 
     for ICD_filename in ICDs_info["files_list"]:
 
-        if ICDs_info["files_list"][ICD_filename]["arch"] == "x32":
+        if ICDs_info["files_list"][ICD_filename]["arch"] == "32bit":
             continue  # vulkaninfo does not work with 32-bit ICDs
 
         extensions_info["by_ICD"][ICD_filename] = _get_empty_ICD_extensions_info()

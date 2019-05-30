@@ -24,9 +24,9 @@ def is_32_bit(filepath):
             rest_of_line = line[i:]
 
             if re.search("^i386:x86-64", rest_of_line):
-                result["32-bit"] = False
+                result["32bit"] = False
             elif re.search("^i386", rest_of_line):
-                result["32-bit"] = True
+                result["32bit"] = True
             else:
                 result["error"] = True
 
