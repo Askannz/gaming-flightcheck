@@ -2,9 +2,9 @@ import re
 from .bash import exec_bash
 
 
-def is_32_bit(filepath):
+def get_binary_file_arch(filepath):
 
-    result = {"error": False, "32-bit": False}
+    result = {"error": False, "arch": False}
 
     returncode, stdout, _ = exec_bash("objdump -f %s" % filepath)
 
@@ -23,10 +23,10 @@ def is_32_bit(filepath):
             _, i = search_res.span()
             rest_of_line = line[i:]
 
-            if re.search("^i386:x86-64", rest_of_line):
-                result["32bit"] = False
+            if re.search("^i386:x86-64", rest_of_line) or re.search("^x86-64", rest_of_line):
+                result["arch"] = "64bit"
             elif re.search("^i386", rest_of_line):
-                result["32bit"] = True
+                result["arch"] = "32bit"
             else:
                 result["error"] = True
 

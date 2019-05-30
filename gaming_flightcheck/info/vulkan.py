@@ -2,7 +2,7 @@ import os
 import re
 import json
 from ..utils.bash import exec_bash
-from ..utils.file import is_32_bit
+from ..utils.file import get_binary_file_arch
 from .libraries import is_library_installed
 
 
@@ -51,14 +51,13 @@ def _get_ICDs_info(system_info):
 
         library_path = icd["ICD"]["library_path"]
 
-        res = is_32_bit(library_path)
+        res = get_binary_file_arch(library_path)
 
         if res["error"]:
             _print_vulkaninfo_error("ICD %s : cannot find library at %s" % (ICD_filename, library_path))
             continue
 
-        arch = "32bit" if res["32bit"] else "64bit"
-        ICDs_info["files_list"][ICD_filename] = {"arch": arch}
+        ICDs_info["files_list"][ICD_filename] = {"arch": res["arch"]}
 
     return ICDs_info
 
