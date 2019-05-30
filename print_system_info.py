@@ -98,8 +98,8 @@ def _print_system_info(system_info):
     print("\tlibvulkan present :\n"
           "\t\t32-bit : %s\n"
           "\t\t64-bit : %s"
-          % (("yes" if libvulkan_info["32bit"] else "no"),
-             ("yes" if libvulkan_info["64bit"] else "no")))
+          % (("yes" if libvulkan_info["32bit"]["present"] else "no"),
+             ("yes" if libvulkan_info["64bit"]["present"] else "no")))
 
     ICDs_info = system_info["vulkan"]["ICDs"]
     print("\tAvailable ICDs :")

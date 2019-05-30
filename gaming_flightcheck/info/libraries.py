@@ -2,7 +2,7 @@ import re
 from ..utils.bash import exec_bash
 
 
-def is_library_installed(system_info, lib_name):
+def get_library_info(system_info, lib_name):
 
     assert "executables_paths" in system_info.keys()
 
@@ -46,19 +46,30 @@ def parse_ldconfig(system_info, lib_name):
             parentheses_text = parentheses_search_res.string
 
             if "x86-64" in parentheses_text:
-                library_info["64bit"] = True
+                arch = "64bit"
             else:
-                library_info["32bit"] = True
+                arch = "32bit"
+
+            _, i2 = parentheses_search_res.span()
+            rest_of_line = line_no_lib_name[i2:]
+            path_search_res = re.search("/[^ ]+$", rest_of_line)
+
+            if not path_search_res:
+                _print_ldconfig_warning(lib_name, "cannot parse library path : %s" % line)
+                continue
+
+            library_info[arch]["present"] = True
+            library_info[arch]["path"] = path_search_res.string
 
             # No point in continuing the parsing, so we break the loop
-            if library_info["64bit"] and library_info["32bit"]:
+            if library_info["64bit"]["present"] and library_info["32bit"]["present"]:
                 break
 
     return library_info
 
 
 def _make_empty_library_info():
-    return {"error": False, "32bit": False, "64bit": False}
+    return {"error": False, "32bit": {"present": False, "path": ""}, "64bit": {"present": False, "path": ""}}
 
 
 def _print_ldconfig_error(lib_name, msg):

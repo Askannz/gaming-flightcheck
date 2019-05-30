@@ -3,7 +3,7 @@ import re
 import json
 from ..utils.bash import exec_bash
 from ..utils.file import get_binary_file_arch
-from .libraries import is_library_installed
+from .libraries import get_library_info
 
 
 RELEVANT_EXTENSIONS_LIST = ["VK_EXT_transform_feedback"]
@@ -21,7 +21,7 @@ def get_vulkan_info(system_info):
 
 
 def _get_libvulkan_info(system_info):
-    return is_library_installed(system_info, "libvulkan")
+    return get_library_info(system_info, "libvulkan")
 
 
 def _get_ICDs_info(system_info):
