@@ -69,7 +69,8 @@ def _get_extensions_info(system_info, ICDs_info):
             continue
 
         for extension_name in RELEVANT_EXTENSIONS_LIST:
-            extensions_info["by_ICD"][ICD_filename]["extensions"][extension_name] = True
+            extensions_info["by_ICD"][ICD_filename]["extensions"][extension_name] = \
+                (extension_name in supported_extensions_list)
 
     return extensions_info
 
