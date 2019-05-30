@@ -1,6 +1,8 @@
 import os
 import re
+import json
 from ..utils.bash import exec_bash
+from ..utils.file import is_32_bit
 from .libraries import is_library_installed
 
 
@@ -24,7 +26,7 @@ def _get_libvulkan_info(system_info):
 
 def _get_ICDs_info(system_info):
 
-    ICDs_info = {"error": False, "files_list": []}
+    ICDs_info = {"error": False, "files_list": {}}
 
     ICDs_folder_path = "/usr/share/vulkan/icd.d/"
 
@@ -32,9 +34,46 @@ def _get_ICDs_info(system_info):
         ICDs_info["error"] = True
         return ICDs_info
 
-    ICDs_info["files_list"] = list(os.listdir(ICDs_folder_path))
+    files_list = list(os.listdir(ICDs_folder_path))
+
+    for ICD_filename in files_list:
+        filepath = os.path.join(ICDs_folder_path, ICD_filename)
+        res = _load_ICD(filepath)
+
+        if res["error"]:
+            continue
+
+        icd = res["icd"]
+
+        if "ICD" not in icd.keys() or "library_path" not in icd["ICD"].keys():
+            _print_vulkaninfo_error("invalid ICD format for file %s" % ICD_filename)
+            continue
+
+        library_path = icd["ICD"]["library_path"]
+
+        res = is_32_bit(library_path)
+
+        if res["error"]:
+            _print_vulkaninfo_error("ICD %s : cannot find library at %s" % (ICD_filename, library_path))
+            continue
+
+        arch = "x32" if res["32-bit"] else "x64"
+        ICDs_info["files_list"][ICD_filename] = {"arch": arch}
 
     return ICDs_info
+
+def _load_ICD(filepath):
+
+    result = {"error": False, "icd": {}}
+
+    with open(filepath, "r") as f:
+        try:
+            result["icd"] = json.load(f)
+        except json.decoder.JSONDecodeError:
+            _print_vulkaninfo_error("cannot load ICD %s : not a JSON file" % filepath)
+            result["error"] = True
+
+    return result
 
 
 def _get_extensions_info(system_info, ICDs_info):
@@ -49,7 +88,7 @@ def _get_extensions_info(system_info, ICDs_info):
 
     for ICD_filename in ICDs_info["files_list"]:
 
-        if "i686" in ICD_filename:
+        if ICDs_info["files_list"][ICD_filename]["arch"] == "x32":
             continue  # vulkaninfo does not work with 32-bit ICDs
 
         extensions_info["by_ICD"][ICD_filename] = _get_empty_ICD_extensions_info()
@@ -115,3 +154,6 @@ def _get_empty_ICD_extensions_info():
 
 def _print_vulkaninfo_warning(msg):
     print("WARNING: vulkaninfo : %s" % msg)
+
+def _print_vulkaninfo_error(msg):
+    print("ERROR: vulkaninfo : %s" % msg)
